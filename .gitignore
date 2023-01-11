@@ -129,5 +129,6 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-scrapper.sql
+*.sql
+!stub/*
 .idea

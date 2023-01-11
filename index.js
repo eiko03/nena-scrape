@@ -15,8 +15,8 @@ const progressbar = new _progress.Bar({
 const PAGE_URL = 'https://cid.nena.org/index.php?&page=';
 const col_length = 6;
 const sql_stub = 'stub/mysql.sql';
-const sql_output = 'scrapper.sql';
-let scrapped_data,pagination_length;
+const sql_output = 'nena_scrapped-'+new Date(Date.now()).toUTCString()+'.sql';
+let scrapped_data, start = 1, end;
 
 function array_chunks(inputArray, perChunk) {
 
@@ -65,11 +65,23 @@ async function scrap(id) {
 
         });
 
-        if(pagination_length === undefined){
-            pagination_length = await page.$eval('li[class*="details"]', el => parseInt(el.innerText.trim().split(" ").pop()));
-            progressbar.start(pagination_length, 0);
+        if( end === undefined){
+            if(start !== 1 && process.argv[3] === "-"){
+                end = start;
+            }
+            else{
+                end = await page.$eval('li[class*="details"]', el => parseInt(el.innerText.trim().split(" ").pop()));
+
+                if(Number.isInteger(parseInt(process.argv[3]))){
+                    end = parseInt(process.argv[3]);
+                }
+
+            }
+
+            progressbar.start(end-start+1, 0);
+
         }
-        progressbar.start(pagination_length, 0);
+
 
         data = array_chunks(data,col_length)
 
@@ -82,22 +94,38 @@ async function scrap(id) {
     return data;
 }
 
+async function prepareArguments(){
+    if(Number.isInteger(parseInt(process.argv[2]))){
+        start = parseInt(process.argv[2]);
 
+
+    }
+}
 
 async function main(){
-    await scrap(1).then(async function (result) {
-        scrapped_data = result;
-        scrapped_data.shift();
-        progressbar.increment(1);
 
-        for (let i = 2; i <= pagination_length; i++) {
-             await scrap(i).then(function (result2) {
-                scrapped_data = scrapped_data.concat(result2);
-                progressbar.update(i);
-            })
-        }
+
+    await prepareArguments().then(async function(){
+
+        await scrap(start).then(async function (result) {
+            scrapped_data = result;
+            if(start === 1){
+                scrapped_data.shift();
+            }
+
+            progressbar.increment(1);
+
+            for (let i = start+1; i <= end; i++) {
+                await scrap(i).then(function (result2) {
+                    scrapped_data = scrapped_data.concat(result2);
+                    progressbar.update(i-start+1);
+                })
+            }
+
+        })
 
     })
+
 
 }
 

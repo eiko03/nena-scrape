@@ -67,7 +67,6 @@ async function scrap(id) {
 
         if(pagination_length === undefined){
             pagination_length = await page.$eval('li[class*="details"]', el => parseInt(el.innerText.trim().split(" ").pop()));
-            pagination_length = 2;
             progressbar.start(pagination_length, 0);
         }
         progressbar.start(pagination_length, 0);

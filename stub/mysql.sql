@@ -20,7 +20,7 @@ SET NAMES utf8mb4;
 -- ----------------------------
 DROP TABLE IF EXISTS `nena_companies`;
 CREATE TABLE `nena_companies`  (
---                                      `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+                                     `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
                                      `CoID` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci UNIQUE NOT NULL,
                                      `Company` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
                                      `Type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE `nena_companies`  (
                                      `24X7 Phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
                                      `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                      `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                     PRIMARY KEY (`CoID`) USING BTREE,
+                                     PRIMARY KEY (`id`) USING BTREE,
                                      INDEX (CoID)
 ) ENGINE = InnoDB AUTO_INCREMENT = 143 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 

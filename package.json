@@ -1,0 +1,18 @@
+{
+  "name": "nena-scrape",
+  "version": "1.0.0",
+  "description": "National Emergency Number Association data scraping",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index",
+    "dev": "nodemon index.js"
+  },
+  "author": "Tipu Sultan Eiko",
+  "license": "ISC",
+  "dependencies": {
+    "ansi-colors": "^4.1.3",
+    "cli-progress": "^3.11.2",
+    "nodemon": "^2.0.20",
+    "puppeteer": "^17.1.3"
+  }
+}

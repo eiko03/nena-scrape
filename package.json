@@ -4,8 +4,7 @@
   "description": "National Emergency Number Association data scraping",
   "main": "index.js",
   "scripts": {
-    "start": "node index",
-    "dev": "nodemon index.js"
+    "start": "node index"
   },
   "author": "Tipu Sultan Eiko",
   "license": "ISC",

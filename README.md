@@ -9,5 +9,5 @@
 - `node index.js {start}` will scrape pages from `{start}` to the end of all pages
 - `node index.js {start} -` will only scrape `{start}` page
 - `{start}` and `{end}` flags will only apply when they are numeric or `-`
-- sql file will be created on root
+- `NENACompanyParser.sql` file will be created on root
 - sql replaces data rather than insert to ignore duplicate data

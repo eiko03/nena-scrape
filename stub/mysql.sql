@@ -4,8 +4,7 @@
  Source Server         : OK[BACKUP-WEST]
  Source Server Type    : MySQL
  Source Server Version : 50712
- Source Host           : ok-acc-w-aurora-rds.cluster-crq2vhd7xl7j.us-west-1.rds.amazonaws.com:3306
- Source Schema         : ok-acc-w-prod-nga911
+ Source Host           : https://cid.nena.org/index.php
 
  Target Server Type    : MySQL
  Target Server Version : 50712

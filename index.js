@@ -4,7 +4,10 @@ const _progress = require('cli-progress');
 const _colors = require('ansi-colors');
 
 
-
+/**
+ * progressbar for ui
+ * @type {SingleBar}
+ */
 const progressbar = new _progress.Bar({
     format: 'Scraping Pages |' + _colors.cyan('{bar}') + '| {percentage}% || {value}/{total} pages ',
     barCompleteChar: '\u2588',
@@ -19,6 +22,12 @@ const sql_output = 'NENACompanyParser.sql';
 const log_flag = '-- log end flag'
 let scrapped_data, start = 1, end;
 
+/**
+ * chunking array by col_length for easy sql insert
+ * @param inputArray
+ * @param perChunk
+ * @returns {*}
+ */
 function array_chunks(inputArray, perChunk) {
 
     return inputArray.reduce((resultArray, item, index) => {
@@ -34,10 +43,20 @@ function array_chunks(inputArray, perChunk) {
     }, [])
 }
 
+/**
+ * add date and page indexing logs to sql file
+ * @param data
+ * @returns {*}
+ */
 function added_log(data){
     return data.replace(log_flag, '-- time: '+ new Date().toUTCString() + ' || startPage: '+start +' || endPage: '+end + "\n" + log_flag)
 }
 
+/**
+ * base scraping logic
+ * @param id
+ * @returns {Promise<*>}
+ */
 async function scrap(id) {
     const browser = await puppeteer.launch({
         args: [
@@ -70,11 +89,18 @@ async function scrap(id) {
 
         });
 
+        /**
+         * end flag selector
+         */
         if( end === undefined){
             if(start !== 1 && process.argv[3] === "-"){
                 end = start;
             }
             else{
+                /**
+                 * scrap end page number from PAGE_URL
+                 * @type {number}
+                 */
                 end = await page.$eval('li[class*="details"]', el => parseInt(el.innerText.trim().split(" ").pop()));
 
                 if(Number.isInteger(parseInt(process.argv[3]))){
@@ -99,14 +125,21 @@ async function scrap(id) {
     return data;
 }
 
+/**
+ * pagination start selector from arguments
+ * @returns {Promise<void>}
+ */
 async function prepareArguments(){
     if(Number.isInteger(parseInt(process.argv[2]))){
         start = parseInt(process.argv[2]);
 
-
     }
 }
 
+/**
+ * main executor to scrap necessary data
+ * @returns {Promise<void>}
+ */
 async function main(){
 
 
@@ -138,6 +171,10 @@ async function main(){
 main().then(function (){
     progressbar.stop();
 
+    /**
+     *  Check already created sql to update
+     */
+
     if(!fs.existsSync(sql_output)){
         fs.copyFile(sql_stub, sql_output, (err) => {
             if (err) {
@@ -146,6 +183,10 @@ main().then(function (){
 
         });
     }
+
+    /**
+     *  add log and data to sql
+     */
 
     fs.readFile(sql_output, 'utf8', function(err, data){
 
@@ -163,12 +204,9 @@ main().then(function (){
 
                         });
 
-                    })
+                    });
                 }
         });
     });
 
-
-
-
-})
+});

@@ -40,7 +40,7 @@ function array_chunks(inputArray, perChunk) {
         resultArray[chunkIndex].push(item)
 
         return resultArray
-    }, [])
+    }, []);
 }
 
 /**
@@ -49,7 +49,7 @@ function array_chunks(inputArray, perChunk) {
  * @returns {*}
  */
 function added_log(data){
-    return data.replace(log_flag, '-- time: '+ new Date().toUTCString() + ' || startPage: '+start +' || endPage: '+end + "\n" + log_flag)
+    return data.replace(log_flag, '-- time: '+ new Date().toUTCString() + ' || startPage: '+start +' || endPage: '+end + "\n" + log_flag);
 }
 
 /**
@@ -85,7 +85,7 @@ async function scrap(id) {
     if(response.status() === 200){
 
         data = await page.evaluate(() => {
-            return Array.from(document.querySelectorAll('table tr td')).map(td => td.innerText)
+            return Array.from(document.querySelectorAll('table tr td')).map(td => td.innerText);
 
         });
 
@@ -114,7 +114,7 @@ async function scrap(id) {
         }
 
 
-        data = array_chunks(data,col_length)
+        data = array_chunks(data,col_length);
 
     }
 
@@ -157,12 +157,12 @@ async function main(){
                 await scrap(i).then(function (result2) {
                     scrapped_data = scrapped_data.concat(result2);
                     progressbar.update(i-start+1);
-                })
+                });
             }
 
-        })
+        });
 
-    })
+    });
 
 
 }

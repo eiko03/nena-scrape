@@ -53,6 +53,50 @@ function added_log(data){
 }
 
 /**
+ * if sql is created for first time
+ * then get basic structure from stub
+ */
+function sql_update_from_stub(){
+
+    if(!fs.existsSync(sql_output)){
+        fs.copyFile(sql_stub, sql_output, (err) => {
+            if (err) {
+                console.log(err);
+            }
+
+        });
+    }
+}
+
+/**
+ * convert scrapped data into update query write to sql
+ * also add log
+ */
+function sql_update_with_data(){
+
+    fs.readFile(sql_output, 'utf8', function(err, data){
+
+        fs.writeFile( sql_output, added_log(data), 'utf8', function(err) {
+            if (err) {
+                console.log(err);
+            }
+            else{
+                scrapped_data.forEach(element => {
+
+                    fs.appendFile(sql_output, "REPLACE INTO nena_companies(CoID,Company,Type,Status,`States Served`,`24X7 Phone`) VALUES (" + element.map(e => JSON.stringify(e)).join(",") +");\n", (err) => {
+                        if (err) {
+                            console.log(err);
+                        }
+
+                    });
+
+                });
+            }
+        });
+    });
+}
+
+/**
  * base scraping logic
  * @param id
  * @returns {Promise<*>}
@@ -164,49 +208,17 @@ async function main(){
 
     });
 
-
 }
 
-
+/**
+ * main run
+ */
 main().then(function (){
+
     progressbar.stop();
 
-    /**
-     *  Check already created sql to update
-     */
+    sql_update_from_stub();
 
-    if(!fs.existsSync(sql_output)){
-        fs.copyFile(sql_stub, sql_output, (err) => {
-            if (err) {
-                console.log(err);
-            }
-
-        });
-    }
-
-    /**
-     *  add log and data to sql
-     */
-
-    fs.readFile(sql_output, 'utf8', function(err, data){
-
-        fs.writeFile( sql_output, added_log(data), 'utf8', function(err) {
-                if (err) {
-                    console.log(err);
-                }
-                else{
-                    scrapped_data.forEach(element => {
-
-                        fs.appendFile(sql_output, "REPLACE INTO nena_companies(CoID,Company,Type,Status,`States Served`,`24X7 Phone`) VALUES (" + element.map(e => JSON.stringify(e)).join(",") +");\n", (err) => {
-                            if (err) {
-                                console.log(err);
-                            }
-
-                        });
-
-                    });
-                }
-        });
-    });
+    sql_update_with_data();
 
 });

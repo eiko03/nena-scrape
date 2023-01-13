@@ -20,6 +20,8 @@ const col_length = 6;
 const sql_stub = 'stub/mysql.sql';
 const sql_output = 'NENACompanyParser.sql';
 const log_flag = '-- log end flag'
+const data_insert_query_start = "REPLACE INTO nena_companies(CoID,Company,Type,Status,`States Served`,`24X7 Phone`) VALUES (";
+const data_insert_query_end = ");\n";
 let scrapped_data, start = 1, end;
 
 /**
@@ -34,7 +36,7 @@ function array_chunks(inputArray, perChunk) {
         const chunkIndex = Math.floor(index/perChunk)
 
         if(!resultArray[chunkIndex]) {
-            resultArray[chunkIndex] = [] // start a new chunk
+            resultArray[chunkIndex] = []
         }
 
         resultArray[chunkIndex].push(item)
@@ -82,13 +84,18 @@ function sql_update_with_data(){
             }
             else{
                 scrapped_data.forEach(element => {
+                    /**
+                     * prevent existing log being written
+                     */
+                    if( !data.includes( data_insert_query_start + "\"" + element[0] + "\"" ) ){
 
-                    fs.appendFile(sql_output, "REPLACE INTO nena_companies(CoID,Company,Type,Status,`States Served`,`24X7 Phone`) VALUES (" + element.map(e => JSON.stringify(e)).join(",") +");\n", (err) => {
-                        if (err) {
-                            console.log(err);
-                        }
+                        fs.appendFile(sql_output,  data_insert_query_start + element.map(e => JSON.stringify(e)).join(",") + data_insert_query_end, (err) => {
+                            if (err) {
+                                console.log(err);
+                            }
 
-                    });
+                        });
+                    }
 
                 });
             }

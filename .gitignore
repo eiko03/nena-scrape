@@ -129,6 +129,6 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-*.sql
+NENACompanyParser.sql
 !stub/*
 .idea

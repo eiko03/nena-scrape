@@ -34,6 +34,12 @@ CREATE TABLE `nena_companies`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 143 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Scraping log
+-- ----------------------------
+
+-- log end flag
+
+-- ----------------------------
 -- Records of nena_companies
 -- ----------------------------
 

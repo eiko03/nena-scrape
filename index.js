@@ -15,7 +15,8 @@ const progressbar = new _progress.Bar({
 const PAGE_URL = 'https://cid.nena.org/index.php?&page=';
 const col_length = 6;
 const sql_stub = 'stub/mysql.sql';
-const sql_output = 'nena_scrapped-'+new Date(Date.now()).toUTCString()+'.sql';
+const sql_output = 'NENACompanyParser.sql';
+const log_flag = '-- log end flag'
 let scrapped_data, start = 1, end;
 
 function array_chunks(inputArray, perChunk) {
@@ -31,6 +32,10 @@ function array_chunks(inputArray, perChunk) {
 
         return resultArray
     }, [])
+}
+
+function added_log(data){
+    return data.replace(log_flag, '-- time: '+ new Date().toUTCString() + ' || startPage: '+start +' || endPage: '+end + "\n" + log_flag)
 }
 
 async function scrap(id) {
@@ -133,22 +138,37 @@ async function main(){
 main().then(function (){
     progressbar.stop();
 
-    fs.copyFile(sql_stub, sql_output, (err) => {
-        if (err) {
-            console.log(err);
-        }
-
-    });
-
-    scrapped_data.forEach(element => {
-
-        fs.appendFile(sql_output, "REPLACE INTO nena_companies(CoID,Company,Type,Status,`States Served`,`24X7 Phone`) VALUES (" + element.map(e => JSON.stringify(e)).join(",") +");\n", (err) => {
+    if(!fs.existsSync(sql_output)){
+        fs.copyFile(sql_stub, sql_output, (err) => {
             if (err) {
                 console.log(err);
             }
 
         });
+    }
 
-    })
+    fs.readFile(sql_output, 'utf8', function(err, data){
+
+        fs.writeFile( sql_output, added_log(data), 'utf8', function(err) {
+                if (err) {
+                    console.log(err);
+                }
+                else{
+                    scrapped_data.forEach(element => {
+
+                        fs.appendFile(sql_output, "REPLACE INTO nena_companies(CoID,Company,Type,Status,`States Served`,`24X7 Phone`) VALUES (" + element.map(e => JSON.stringify(e)).join(",") +");\n", (err) => {
+                            if (err) {
+                                console.log(err);
+                            }
+
+                        });
+
+                    })
+                }
+        });
+    });
+
+
+
 
 })

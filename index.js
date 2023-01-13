@@ -5,7 +5,7 @@ const _colors = require('ansi-colors');
 
 
 /**
- * progressbar for ui
+ * progressbar for UI
  * @type {SingleBar}
  */
 const progressbar = new _progress.Bar({

@@ -181,7 +181,7 @@ async function prepareArguments(){
 }
 
 /**
- * main executor to scrap necessary data
+ * arguments controlled scrap runner
  * @returns {Promise<void>}
  */
 async function main(){
@@ -211,7 +211,7 @@ async function main(){
 }
 
 /**
- * main run
+ * main executor
  */
 main().then(function (){
 
